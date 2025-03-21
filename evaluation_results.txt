@@ -1,0 +1,15 @@
+
+===== BLIP on MSCOCO 評估結果 =====
+BLEU Score: 0.2552
+ROUGE-1: 0.5687, ROUGE-2: 0.3350
+METEOR Score: 0.4207
+
+===== BLIP on Flickr30k 評估結果 =====
+BLEU Score: 0.1619
+ROUGE-1: 0.4784, ROUGE-2: 0.2532
+METEOR Score: 0.3237
+
+===== Phi-4 on MSCOCO 評估結果 =====
+BLEU Score: 0.0487
+ROUGE-1: 0.2220, ROUGE-2: 0.1055
+METEOR Score: 0.3317
