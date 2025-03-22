@@ -48,45 +48,64 @@ def evaluate_phi4_on_flickr30k(max_images=None):
     all_reference_captions = []
 
     # 使用 tqdm 顯示進度條
-    for i, data in tqdm(enumerate(dataset), total=min(max_images, len(dataset)), desc="Processing Phi-4 on Flickr30k"):
-        if i >= max_images:
-            break  # 限制處理圖片數量
+    batch_size = 6
+    total_batches = (len(dataset) + batch_size - 1) // batch_size
 
-        # **處理圖片**
-        img_data = data["image"]
-        if isinstance(img_data, str):  # URL
-            try:
-                response = requests.get(img_data)
-                response.raise_for_status()
-                raw_image = Image.open(BytesIO(response.content)).convert("RGB")
-            except Exception as e:
-                print(f"讀取圖片失敗 (URL): {e}")
-                continue
-        elif isinstance(img_data, Image.Image):  # PIL Image
-            raw_image = img_data.convert("RGB")
-        else:
-            print(f"未知的圖片格式: {type(img_data)}，跳過")
-            continue
+    with torch.no_grad():
+        for i in tqdm(range(0, len(dataset), batch_size), desc=f"Processing Phi-4 on Flickr30k", total=total_batches):
+            # for data in batch_data:
+            #     # 加入檢查輸出 data 的類型
+            #     print(f"Processing data: {data.keys()}")  # 打印出 data 的鍵
 
-        # **模型推理**
-        prompt = '<|user|><|image_1|>What is shown in this image?<|end|><|assistant|>'
-        inputs = processor(text=prompt, images=raw_image, return_tensors="pt").to(device)
-        generate_ids = model.generate(
-            **inputs,
-            max_new_tokens=1000,
-            generation_config=generation_config,
-        )
-        generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]
-        generated_caption = processor.batch_decode(
-            generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
-        )[0]
+            #     # 確保圖片字段存在並且是有效的
+            #     if "image" in data and isinstance(data["image"], (str, Image.Image)):
+            #         img_data = data["image"]
 
-        # 取得 Ground Truth captions
-        reference_captions = data["caption"]
+            #         if isinstance(img_data, str):  # URL
+            #             try:
+            #                 response = requests.get(img_data)
+            #                 response.raise_for_status()
+            #                 raw_image = Image.open(BytesIO(response.content)).convert("RGB")
+            #             except Exception as e:
+            #                 print(f"讀取圖片失敗 (URL): {e}")
+            #                 continue
+            #         elif isinstance(img_data, Image.Image):  # PIL Image
+            #             raw_image = img_data.convert("RGB")
+            #         else:
+            #             print(f"未知的圖片格式: {type(img_data)}，跳過")
+            #             continue
 
-        # 收集生成的 caption 和 Ground Truth
-        all_generated_captions.append(generated_caption)
-        all_reference_captions.append(reference_captions)
+            #         batch_images.append(raw_image)
+            #         batch_prompts.append('<|user|><|image_1|>What is shown in this image?<|end|><|assistant|>')
+
+            #     else:
+            #         print(f"數據中找不到有效的 'image' 字段，跳過這一項")
+            #         continue
+
+            # **處理圖片**
+            batch = dataset.select(range(i, min(i + batch_size, len(dataset))))
+            batch_images = batch["image"]
+            batch_prompts = ['<|user|><|image_1|>What is shown in this image?<|end|><|assistant|>'] * len(batch)
+
+            # **模型推理**
+            if batch_images:
+                inputs = processor(text=batch_prompts, images=batch_images, return_tensors="pt", padding=True).to(device)
+                generate_ids = model.generate(
+                    **inputs,
+                    max_new_tokens=512,  # 設定最大新tokens為512
+                    generation_config=generation_config,
+                )
+                generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]
+                generated_captions_batch = processor.batch_decode(
+                    generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
+                )
+
+                # 取得 Ground Truth captions
+                reference_captions_batch = batch["caption"]
+
+                # 收集生成的 caption 和 Ground Truth
+                all_generated_captions.extend(generated_captions_batch)
+                all_reference_captions.extend(reference_captions_batch)
 
     # **一次性計算所有圖片的 BLEU, ROUGE, METEOR**
     bleu_result = bleu.compute(predictions=all_generated_captions, references=all_reference_captions)
@@ -103,7 +122,7 @@ def evaluate_phi4_on_flickr30k(max_images=None):
     print(evaluation_results)
 
     # 儲存結果到檔案
-    with open("evaluation_results.txt", "a") as f:
+    with open("evaluation_results_phi-4_flickr30k.txt", "a") as f:
         f.write(evaluation_results)
 
 # **執行 Phi-4 on Flickr30k**
