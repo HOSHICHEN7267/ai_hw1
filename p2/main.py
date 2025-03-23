@@ -32,10 +32,10 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
     content_images = os.listdir(content_images_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    # Prepare CSV file for storing captions
+    # Prepare CSV file for storing captions and image paths
     with open(caption_csv_path, mode='w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["Image Name", "Generated Caption"])  # CSV header
+        writer.writerow(["Image Name", "Generated Caption", "224x224 Image Path"])  # CSV header
 
         # Use tqdm to create a progress bar for the loop
         for image_name in tqdm(content_images, desc="Processing images", unit="image"):
@@ -62,10 +62,6 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                     generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
                 )[0]
 
-                # Save caption to CSV
-                writer.writerow([image_name, response])
-                print(f'Generated text prompt for image {image_name}: {response}')
-
                 # Add Snoopy style to prompt
                 snoopy_prompt = response + ", in Snoopy comic style"
 
@@ -77,17 +73,21 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                     guidance_scale=7.0,
                 ).images[0]
 
-                # Save the output image
-                snoopy_image_path = os.path.join(output_folder, f"snoopy_{image_name}")
-                snoopy_image.save(snoopy_image_path)
-                print(f'Saved Snoopy-style image to {snoopy_image_path}')
+                # Resize image to 224x224
+                resized_image = snoopy_image.resize((224, 224), Image.Resampling.LANCZOS)
+                resized_image_path = os.path.join(output_folder, f"snoopy_{image_name}")
+                resized_image.save(resized_image_path)
+                print(f'Saved resized 224x224 image to {resized_image_path}')
+
+                # Save info to CSV
+                writer.writerow([image_name, response, resized_image_path])
 
             except Exception as e:
                 print(f"❌ Error processing {image_name}: {e}")
 
 # Define paths for input images and output folder
 content_images_folder = './content_image'
-output_folder = './output_image'
+output_folder = './output_image'  # Will contain only resized images
 caption_csv_path = './captions.csv'
 
 # Run the pipeline
