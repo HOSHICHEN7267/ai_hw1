@@ -13,3 +13,8 @@ METEOR Score: 0.3237
 BLEU Score: 0.0487
 ROUGE-1: 0.2220, ROUGE-2: 0.1055
 METEOR Score: 0.3317
+
+===== Phi-4 on Flickr30k 評估結果 =====
+BLEU Score: 0.0353
+ROUGE-1: 0.2044, ROUGE-2: 0.0864
+METEOR Score: 0.2991
