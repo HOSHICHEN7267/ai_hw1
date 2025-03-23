@@ -32,7 +32,7 @@ pipe.enable_model_cpu_offload()  # keep offload only
 generation_config = GenerationConfig.from_pretrained(model_path_phi4)
 
 # Function to process each image
-def generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path):
+def generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path, custom_suffix):
     # ✅ Sorted image list
     content_images = sorted(
         [f for f in os.listdir(content_images_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
@@ -71,7 +71,7 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                 )[0].strip()
 
                 # Add Snoopy style suffix & truncate if over token limit
-                snoopy_suffix = ", in Snoopy comic style"
+                snoopy_suffix = custom_suffix  # 使用傳入的 suffix
                 max_total_tokens = 77
                 while True:
                     combined_prompt = response + snoopy_suffix
@@ -92,7 +92,7 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
 
                 # Resize to 224x224
                 resized_image = snoopy_image.resize((224, 224), Image.Resampling.LANCZOS)
-                resized_image_path = os.path.join(output_folder, f"snoopy_{image_name}")
+                resized_image_path = os.path.join(output_folder, f"{image_name}")
                 resized_image.save(resized_image_path)
                 print(f"✅ Saved resized image: {resized_image_path}")
 
@@ -107,5 +107,5 @@ content_images_folder = './content_image'
 output_folder = './output_image'
 caption_csv_path = './captions.csv'
 
-# Run the pipeline
-generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path)
+# # Run the pipeline
+# generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path)
