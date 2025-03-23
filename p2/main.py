@@ -1,9 +1,10 @@
 import os
+import csv
 import torch
 from PIL import Image
 from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig
 from diffusers import StableDiffusion3Pipeline
-from tqdm import tqdm  # 引入 tqdm 進度條
+from tqdm import tqdm
 
 # Set up paths and models
 model_path_phi4 = "microsoft/Phi-4-multimodal-instruct"
@@ -27,55 +28,67 @@ pipe = pipe.to("cuda")
 generation_config = GenerationConfig.from_pretrained(model_path_phi4)
 
 # Function to process each image
-def generate_snoopy_style_images(content_images_folder, output_folder):
+def generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path):
     content_images = os.listdir(content_images_folder)
-    
-    # Use tqdm to create a progress bar for the loop
-    for image_name in tqdm(content_images, desc="Processing images", unit="image"):
-        # Prepare image and instruction for Phi-4
-        content_image_path = os.path.join(content_images_folder, image_name)
-        image = Image.open(content_image_path).convert("RGB")
+    os.makedirs(output_folder, exist_ok=True)
 
-        # Create the Phi-4 prompt for describing the content
-        user_prompt = '<|user|>'
-        assistant_prompt = '<|assistant|>'
-        prompt_suffix = '<|end|>'
-        prompt = f'{user_prompt}<|image_1|>What is shown in this image?{prompt_suffix}{assistant_prompt}'
+    # Prepare CSV file for storing captions
+    with open(caption_csv_path, mode='w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Image Name", "Generated Caption"])  # CSV header
 
-        # Feed image to Phi-4
-        inputs = processor(text=prompt, images=image, return_tensors='pt').to('cuda:0')
-        generate_ids = phi4_model.generate(
-            **inputs,
-            max_new_tokens=1000,
-            generation_config=generation_config,
-        )
-        generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]
-        response = processor.batch_decode(
-            generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
-        )[0]
+        # Use tqdm to create a progress bar for the loop
+        for image_name in tqdm(content_images, desc="Processing images", unit="image"):
+            try:
+                # Prepare image and instruction for Phi-4
+                content_image_path = os.path.join(content_images_folder, image_name)
+                image = Image.open(content_image_path).convert("RGB")
 
-        # Get the generated text prompt
-        print(f'Generated text prompt for image {image_name}: {response}')
+                # Create the Phi-4 prompt for describing the content
+                user_prompt = '<|user|>'
+                assistant_prompt = '<|assistant|>'
+                prompt_suffix = '<|end|>'
+                prompt = f'{user_prompt}<|image_1|>What is shown in this image?{prompt_suffix}{assistant_prompt}'
 
-        # Use the generated text prompt for Stable Diffusion
-        snoopy_image = pipe(
-            response,  # Generated text prompt
-            negative_prompt="",
-            num_inference_steps=28,
-            guidance_scale=7.0,
-        ).images[0]
+                # Feed image to Phi-4
+                inputs = processor(text=prompt, images=image, return_tensors='pt').to('cuda:0')
+                generate_ids = phi4_model.generate(
+                    **inputs,
+                    max_new_tokens=1000,
+                    generation_config=generation_config,
+                )
+                generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]
+                response = processor.batch_decode(
+                    generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
+                )[0]
 
-        # Save the output image
-        snoopy_image_path = os.path.join(output_folder, f"snoopy_{image_name}")
-        snoopy_image.save(snoopy_image_path)
-        print(f'Saved Snoopy-style image to {snoopy_image_path}')
+                # Save caption to CSV
+                writer.writerow([image_name, response])
+                print(f'Generated text prompt for image {image_name}: {response}')
+
+                # Add Snoopy style to prompt
+                snoopy_prompt = response + ", in Snoopy comic style"
+
+                # Use the generated text prompt for Stable Diffusion
+                snoopy_image = pipe(
+                    snoopy_prompt,
+                    negative_prompt="",
+                    num_inference_steps=28,
+                    guidance_scale=7.0,
+                ).images[0]
+
+                # Save the output image
+                snoopy_image_path = os.path.join(output_folder, f"snoopy_{image_name}")
+                snoopy_image.save(snoopy_image_path)
+                print(f'Saved Snoopy-style image to {snoopy_image_path}')
+
+            except Exception as e:
+                print(f"❌ Error processing {image_name}: {e}")
 
 # Define paths for input images and output folder
-content_images_folder = 'path_to_your_content_images'  # Replace with your content image folder
-output_folder = 'path_to_output_images'  # Replace with your desired output folder
+content_images_folder = './content_image'
+output_folder = './output_image'
+caption_csv_path = './captions.csv'
 
-# Ensure output folder exists
-os.makedirs(output_folder, exist_ok=True)
-
-# Process all images with progress bar
-generate_snoopy_style_images(content_images_folder, output_folder)
+# Run the pipeline
+generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path)
