@@ -38,6 +38,7 @@ def evaluate_phi4_on_flickr30k(max_images=None):
 
     # 載入 Flickr30k 數據集
     dataset = load_dataset("nlphuji/flickr30k")["test"]
+    print(f"Dataset size: {len(dataset)}")  # 打印數據集大小
 
     # 設定預設的 `MAX_IMAGES`
     default_max_images = 30000  # Flickr30k 30000 張
@@ -47,7 +48,7 @@ def evaluate_phi4_on_flickr30k(max_images=None):
     all_generated_captions = []
     all_reference_captions = []
 
-    # 使用 tqdm 顯示進度條
+    # 處理圖片的批次大小
     batch_size = 6
     total_batches = (len(dataset) + batch_size - 1) // batch_size
 
