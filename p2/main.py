@@ -20,9 +20,15 @@ phi4_model = AutoModelForCausalLM.from_pretrained(
     _attn_implementation='flash_attention_2',
 ).cuda()
 
-# Load Stable Diffusion 3 model
-pipe = StableDiffusion3Pipeline.from_pretrained(model_path_sd, torch_dtype=torch.float16)
-pipe = pipe.to("cuda")
+# Load Stable Diffusion 3 model with VRAM-saving settings
+pipe = StableDiffusion3Pipeline.from_pretrained(
+    model_path_sd,
+    text_encoder_3=None,
+    tokenizer_3=None,
+    torch_dtype=torch.float16
+)
+pipe.enable_model_cpu_offload()
+pipe.set_progress_bar_config(disable=True)
 
 # Load generation config for Phi-4
 generation_config = GenerationConfig.from_pretrained(model_path_phi4)
@@ -54,16 +60,27 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                 inputs = processor(text=prompt, images=image, return_tensors='pt').to('cuda:0')
                 generate_ids = phi4_model.generate(
                     **inputs,
-                    max_new_tokens=1000,
+                    max_new_tokens=50,  # 控制回答不要太長
                     generation_config=generation_config,
                 )
                 generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]
                 response = processor.batch_decode(
                     generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
-                )[0]
+                )[0].strip()
 
-                # Add Snoopy style to prompt
-                snoopy_prompt = response + ", in Snoopy comic style"
+                # Add Snoopy style to prompt, check token length
+                snoopy_suffix = ", in Snoopy comic style"
+                max_total_tokens = 77
+
+                while True:
+                    combined_prompt = response + snoopy_suffix
+                    tokenized = pipe.tokenizer(combined_prompt, return_tensors=None)
+                    if len(tokenized["input_ids"]) <= max_total_tokens:
+                        break
+                    # Trim one word at a time from the end if too long
+                    response = " ".join(response.split(" ")[:-1])
+
+                snoopy_prompt = response + snoopy_suffix
 
                 # Use the generated text prompt for Stable Diffusion
                 snoopy_image = pipe(
@@ -87,7 +104,7 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
 
 # Define paths for input images and output folder
 content_images_folder = './content_image'
-output_folder = './output_image'  # Will contain only resized images
+output_folder = './output_image'
 caption_csv_path = './captions.csv'
 
 # Run the pipeline
