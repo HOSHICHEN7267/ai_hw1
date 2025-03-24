@@ -136,4 +136,4 @@ def evaluate_model_on_dataset(model_name, dataset_name, max_images=None):
 evaluate_model_on_dataset("BLIP", "MSCOCO")  # 預設 5000 張
 evaluate_model_on_dataset("BLIP", "Flickr30k")  # 預設 30000 張
 evaluate_model_on_dataset("Phi-4", "MSCOCO")  # 可手動調整，如 2000 張
-evaluate_model_on_dataset("Phi-4", "Flickr30k")  # 可手動調整，如 10000 張
+# evaluate_model_on_dataset("Phi-4", "Flickr30k")  # 可手動調整，如 10000 張
