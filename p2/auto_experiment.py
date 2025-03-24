@@ -19,12 +19,12 @@ eval_script = 'eval_artfid.py'
 eval_script_dir = './evaluation'
 
 # === 5 Recommended Prompt Variations ===
-prompt_suffix_list = [
-    ", in Snoopy comic style",
-    ", illustrated in the style of Snoopy comic strips, black and white ink",
-    ", in Snoopy comic style, preserve subject and layout",
-    ", Snoopy style, but keep object layout and scene structure",
-    ", black and white Snoopy comic illustration, preserve composition and perspective"
+style_prompt_list = [
+    "Bright, colorful, cartoonish with simple lines, bold outlines, and exaggerated features. Reminiscent of the Peanuts comic strip.",
+    "Colorful, cartoonish, anthropomorphic, simple shapes, bold outlines, vibrant colors, exaggerated features, playful, festive, whimsical. Reminiscent of the Peanuts comic strip.",
+    "Colorful, bold outlines, flat colors, anthropomorphic characters, simple lines, exaggerated features, whimsical theme. Reminiscent of the Peanuts comic strip.",
+    "Colorful, cartoonish, simple lines, bright colors, bold outlines, exaggerated features. Reminiscent of the Peanuts comic strip.",
+    "Bright, colorful, cartoonish, bold outlines, simple lines, vibrant colors, exaggerated features, whimsical themes. Reminiscent of the Peanuts comic strip."
 ]
 
 # === Resize content images to 224x224 ===
@@ -48,8 +48,8 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(['Prompt Index', 'Prompt Suffix', 'ArtFID', 'FID', 'LPIPS', 'LPIPS_gray'])
 
-    for idx, suffix in enumerate(prompt_suffix_list):
-        print(f"\n🚀 Running experiment for prompt_{idx}: {suffix}")
+    for idx, style_prompt in enumerate(style_prompt_list):
+        print(f"\n🚀 Running experiment for prompt_{idx}: {style_prompt}")
 
         output_folder = os.path.join(experiments_root, f'prompt_{idx}')
         os.makedirs(output_folder, exist_ok=True)
@@ -59,7 +59,7 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             content_images_folder=content_images_folder,
             output_folder=output_folder,
             caption_csv_path=os.path.join(output_folder, 'captions.csv'),
-            custom_suffix=suffix
+            style_prompt=style_prompt
         )
 
         # Run evaluation inside eval_script_dir
@@ -85,9 +85,9 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             match = re.search(r"ArtFID:\s*([\d.]+).*?FID:\s*([\d.]+).*?LPIPS:\s*([\d.]+).*?LPIPS_gray:\s*([\d.]+)", stdout)
             if match:
                 numbers = [float(g) for g in match.groups()]
-                writer.writerow([idx, suffix] + numbers)
+                writer.writerow([idx, style_prompt] + numbers)
             else:
                 raise ValueError(f"ArtFID output not found in stdout:\n{stdout}")
         except Exception as e:
             print(f"❌ Failed to parse eval results for prompt_{idx}: {e}")
-            writer.writerow([idx, suffix, 'ERROR', 'ERROR', 'ERROR', 'ERROR'])
+            writer.writerow([idx, style_prompt, 'ERROR', 'ERROR', 'ERROR', 'ERROR'])
