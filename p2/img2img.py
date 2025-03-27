@@ -23,7 +23,7 @@ sd_pipeline = AutoPipelineForImage2Image.from_pretrained(
     "stable-diffusion-v1-5/stable-diffusion-v1-5",
     torch_dtype=torch.float16,
     variant="fp16",
-    use_safetensors=True
+    safety_checker=None,
 )
 sd_pipeline.enable_model_cpu_offload()
 sd_pipeline.enable_xformers_memory_efficient_attention()
