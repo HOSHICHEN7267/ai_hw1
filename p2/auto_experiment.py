@@ -20,7 +20,11 @@ eval_script_dir = './evaluation'
 
 # === 5 Recommended Prompt Variations ===
 style_prompt_list = [
-    ", in Snoopy comic style",
+    "Bright, colorful, cartoonish with simple lines, bold outlines, and exaggerated features. Reminiscent of the Peanuts comic strip.",
+    "Colorful, cartoonish, anthropomorphic, simple shapes, bold outlines, vibrant colors, exaggerated features, playful, festive, whimsical. Reminiscent of the Peanuts comic strip.",
+    "Colorful, bold outlines, flat colors, anthropomorphic characters, simple lines, exaggerated features, whimsical theme. Reminiscent of the Peanuts comic strip.",
+    "Colorful, cartoonish, simple lines, bright colors, bold outlines, exaggerated features. Reminiscent of the Peanuts comic strip.",
+    "Bright, colorful, cartoonish, bold outlines, simple lines, vibrant colors, exaggerated features, whimsical themes. Reminiscent of the Peanuts comic strip."
 ]
 
 # === Resize content images to 224x224 ===
