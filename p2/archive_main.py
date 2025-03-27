@@ -103,10 +103,16 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
             except Exception as e:
                 print(f"❌ Error processing {image_name}: {e}")
 
-# # Set your paths
+# Set your paths
 # content_images_folder = './content_image'
 # output_folder = './output_image'
 # caption_csv_path = './captions.csv'
 
-# # Run the pipeline
-# generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path)
+# Inferencing profile image
+content_images_folder = './profile_image'
+output_folder = './output_image_profile_2-1'
+caption_csv_path = './captions_profile.csv'
+custom_suffix = ", in Snoopy comic style"
+
+# Run the pipeline
+generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path, custom_suffix)

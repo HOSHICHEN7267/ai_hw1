@@ -77,7 +77,7 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                 task_description = "Draw this:"
                 style_description = style_prompt  # passed from outside
 
-                full_prompt = f"{task_description}\nContent: {content_description}\nStyle: {style_description}"
+                full_prompt = f"{task_description} {content_description}, {style_description}"
 
                 # Truncate if over token limit
                 max_total_tokens = 77

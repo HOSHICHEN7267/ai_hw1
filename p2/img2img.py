@@ -29,10 +29,16 @@ sd_pipeline.enable_model_cpu_offload()
 sd_pipeline.enable_xformers_memory_efficient_attention()
 
 # === Config ===
-content_images_folder = './content_image'
-output_folder = './output_image_img2img'
-description_csv_path = './captions_img2img.csv'
-style_prompt = "black and white Snoopy comic style, simplified lines, expressive faces"
+# content_images_folder = './content_image'
+# output_folder = './output_image_img2img'
+# description_csv_path = './captions_img2img.csv'
+# style_prompt = ", in Snoopy comic style"
+
+# For profile image inference
+content_images_folder = './profile_image'
+output_folder = './output_image_profile_2-2'
+description_csv_path = './captions_profile_2-2.csv'
+style_prompt = ", in Snoopy comic style"
 
 os.makedirs(output_folder, exist_ok=True)
 
@@ -73,7 +79,8 @@ def main():
                 description = describe_image_with_phi4(pil_image)
 
                 # === Step 3: Compose prompt ===
-                full_prompt = f"Draw this person: {description}. Style: {style_prompt}. Do not generate any NSFW content."
+                # full_prompt = f"Draw this person: {description}. Style: {style_prompt}."
+                full_prompt = description + style_prompt
 
                 # === Step 4: Resize image to 512x512 and feed into SD1.5 img2img ===
                 resized_input = pil_image.resize((512, 512), Image.Resampling.LANCZOS)

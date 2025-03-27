@@ -20,11 +20,7 @@ eval_script_dir = './evaluation'
 
 # === 5 Recommended Prompt Variations ===
 style_prompt_list = [
-    "Bright, colorful, cartoonish with simple lines, bold outlines, and exaggerated features. Reminiscent of the Peanuts comic strip.",
-    "Colorful, cartoonish, anthropomorphic, simple shapes, bold outlines, vibrant colors, exaggerated features, playful, festive, whimsical. Reminiscent of the Peanuts comic strip.",
-    "Colorful, bold outlines, flat colors, anthropomorphic characters, simple lines, exaggerated features, whimsical theme. Reminiscent of the Peanuts comic strip.",
-    "Colorful, cartoonish, simple lines, bright colors, bold outlines, exaggerated features. Reminiscent of the Peanuts comic strip.",
-    "Bright, colorful, cartoonish, bold outlines, simple lines, vibrant colors, exaggerated features, whimsical themes. Reminiscent of the Peanuts comic strip."
+    "reminiscent of the Peanuts comic strip.",
 ]
 
 # === Resize content images to 224x224 ===
@@ -71,6 +67,7 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             # '--batch_size', str(batch_size),
             '--device', device,
             '--mode', eval_mode,
+            
             '--content_metric', content_metric
         ], cwd=eval_script_dir, capture_output=True, text=True, universal_newlines=True)
 

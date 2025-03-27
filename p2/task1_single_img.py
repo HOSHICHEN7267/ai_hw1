@@ -100,10 +100,10 @@ def process_single_image(content_image_path, output_folder, caption_csv_path, st
         print(f"❌ Error processing {content_image_path}: {e}")
 
 # Set your paths
-content_image_path = 'profile_image.png'  # Change this to the image you want to process
-output_folder = './profile_image'
-caption_csv_path = './profile_captions.csv'
-style_prompt = "Reminiscent of the Peanuts comic strip"
+content_image_path = 'profile_image.jpg'  # Change this to the image you want to process
+output_folder = './output_image_profile_2-1/'
+caption_csv_path = './captions.csv'
+style_prompt = ", in Snoopy comic style"
 
 # Run the pipeline for the single image
 process_single_image(content_image_path, output_folder, caption_csv_path, style_prompt)
