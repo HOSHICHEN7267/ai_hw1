@@ -314,6 +314,10 @@ def compute_content_distance(path_to_stylized, path_to_content, batch_size, cont
     N = 0
     pbar = tqdm(total=len(stylized_image_paths))
     for batch_stylized, batch_content in zip(dataloader_stylized, dataloader_content):
+
+        print(batch_stylized.shape)
+        print(batch_content.shape) 
+
         with torch.no_grad():
             batch_dist = metric(batch_stylized.to(device), batch_content.to(device))
             N += batch_stylized.shape[0]

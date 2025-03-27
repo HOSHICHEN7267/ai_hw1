@@ -54,34 +54,6 @@ def evaluate_phi4_on_flickr30k(max_images=None):
 
     with torch.no_grad():
         for i in tqdm(range(0, len(dataset), batch_size), desc=f"Processing Phi-4 on Flickr30k", total=total_batches):
-            # for data in batch_data:
-            #     # 加入檢查輸出 data 的類型
-            #     print(f"Processing data: {data.keys()}")  # 打印出 data 的鍵
-
-            #     # 確保圖片字段存在並且是有效的
-            #     if "image" in data and isinstance(data["image"], (str, Image.Image)):
-            #         img_data = data["image"]
-
-            #         if isinstance(img_data, str):  # URL
-            #             try:
-            #                 response = requests.get(img_data)
-            #                 response.raise_for_status()
-            #                 raw_image = Image.open(BytesIO(response.content)).convert("RGB")
-            #             except Exception as e:
-            #                 print(f"讀取圖片失敗 (URL): {e}")
-            #                 continue
-            #         elif isinstance(img_data, Image.Image):  # PIL Image
-            #             raw_image = img_data.convert("RGB")
-            #         else:
-            #             print(f"未知的圖片格式: {type(img_data)}，跳過")
-            #             continue
-
-            #         batch_images.append(raw_image)
-            #         batch_prompts.append('<|user|><|image_1|>What is shown in this image?<|end|><|assistant|>')
-
-            #     else:
-            #         print(f"數據中找不到有效的 'image' 字段，跳過這一項")
-            #         continue
 
             # **處理圖片**
             batch = dataset.select(range(i, min(i + batch_size, len(dataset))))

@@ -32,7 +32,8 @@ pipe.enable_model_cpu_offload()  # keep offload only
 generation_config = GenerationConfig.from_pretrained(model_path_phi4)
 
 # Function to process each image
-def generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path, style_prompt):
+def generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path, custom_suffix):
+
     # ✅ Sorted image list
     content_images = sorted(
         [f for f in os.listdir(content_images_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
@@ -52,46 +53,39 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                 content_image_path = os.path.join(content_images_folder, image_name)
                 image = Image.open(content_image_path).convert("RGB")
 
-                # Create improved Phi-4 prompt for short, accurate caption (face-focused)
+                # Create Phi-4 prompt
                 user_prompt = '<|user|>'
                 assistant_prompt = '<|assistant|>'
-                prompt = (
-                    f"{user_prompt}<|image_1|>Please describe the person's appearance in this image concisely. "
-                    "Focus on facial features, hairstyle, facial expression, visible accessories, and the position and orientation of the face within the image. Limit to 40 tokens.<|end|>"
-                    + assistant_prompt
-                )
+                prompt_suffix = '<|end|>'
+                prompt = f'{user_prompt}<|image_1|>What is shown in this image?{prompt_suffix}{assistant_prompt}'
 
                 # Run Phi-4 to generate caption
                 inputs = processor(text=prompt, images=image, return_tensors='pt').to('cuda:0')
                 generate_ids = phi4_model.generate(
                     **inputs,
-                    max_new_tokens=40,
+                    max_new_tokens=50,  # limit to short response
                     generation_config=generation_config,
                 )
                 generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]
-                content_description = processor.batch_decode(
+                response = processor.batch_decode(
                     generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
                 )[0].strip()
 
-                # === Structured Prompt Construction ===
-                task_description = "Draw this:"
-                style_description = style_prompt  # passed from outside
-
-                full_prompt = f"{task_description}\nContent: {content_description}\nStyle: {style_description}"
-
-                # Truncate if over token limit
+                # Add Snoopy style suffix & truncate if over token limit
+                snoopy_suffix = custom_suffix  # 使用傳入的 suffix
                 max_total_tokens = 77
                 while True:
-                    tokenized = pipe.tokenizer(full_prompt, return_tensors=None)
+                    combined_prompt = response + snoopy_suffix
+                    tokenized = pipe.tokenizer(combined_prompt, return_tensors=None)
                     if len(tokenized["input_ids"]) <= max_total_tokens:
                         break
-                    # remove one word from content_description if too long
-                    content_description = " ".join(content_description.split(" ")[:-1])
-                    full_prompt = f"{task_description}\nContent: {content_description}\nStyle: {style_description}"
+                    response = " ".join(response.split(" ")[:-1])
+
+                snoopy_prompt = response + snoopy_suffix
 
                 # Generate image from Stable Diffusion
                 snoopy_image = pipe(
-                    full_prompt,
+                    snoopy_prompt,
                     negative_prompt="",
                     num_inference_steps=28,
                     guidance_scale=7.0,
@@ -104,15 +98,15 @@ def generate_snoopy_style_images(content_images_folder, output_folder, caption_c
                 print(f"✅ Saved resized image: {resized_image_path}")
 
                 # Write to CSV
-                writer.writerow([image_name, content_description, resized_image_path])
+                writer.writerow([image_name, response, resized_image_path])
 
             except Exception as e:
                 print(f"❌ Error processing {image_name}: {e}")
 
-# Set your paths
-content_images_folder = './content_image'
-output_folder = './output_image'
-caption_csv_path = './captions.csv'
+# # Set your paths
+# content_images_folder = './content_image'
+# output_folder = './output_image'
+# caption_csv_path = './captions.csv'
 
 # # Run the pipeline
 # generate_snoopy_style_images(content_images_folder, output_folder, caption_csv_path)

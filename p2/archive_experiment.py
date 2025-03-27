@@ -1,7 +1,7 @@
 import os
 import csv
 import subprocess
-from main import generate_snoopy_style_images
+from archive_main import generate_snoopy_style_images
 from PIL import Image
 import re
 
@@ -16,10 +16,10 @@ device = 'cuda'
 content_metric = 'lpips'
 eval_mode = 'art_fid'
 eval_script = 'eval_artfid.py'
-eval_script_dir = './evaluation'
+eval_script_dir = './evaluation'  # Location of eval_artfid.py and dependencies
 
 # === 5 Recommended Prompt Variations ===
-style_prompt_list = [
+prompt_suffix_list = [
     ", in Snoopy comic style",
 ]
 
@@ -44,8 +44,8 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(['Prompt Index', 'Prompt Suffix', 'ArtFID', 'FID', 'LPIPS', 'LPIPS_gray'])
 
-    for idx, style_prompt in enumerate(style_prompt_list):
-        print(f"\n🚀 Running experiment for prompt_{idx}: {style_prompt}")
+    for idx, suffix in enumerate(prompt_suffix_list):
+        print(f"\n🚀 Running experiment for prompt_{idx}: {suffix}")
 
         output_folder = os.path.join(experiments_root, f'prompt_{idx}')
         os.makedirs(output_folder, exist_ok=True)
@@ -55,7 +55,7 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             content_images_folder=content_images_folder,
             output_folder=output_folder,
             caption_csv_path=os.path.join(output_folder, 'captions.csv'),
-            style_prompt=style_prompt
+            custom_suffix=suffix
         )
 
         # Run evaluation inside eval_script_dir
@@ -68,22 +68,17 @@ with open(caption_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             '--device', device,
             '--mode', eval_mode,
             '--content_metric', content_metric
-        ], cwd=eval_script_dir, capture_output=True, text=True, universal_newlines=True)
+        ], cwd=eval_script_dir, capture_output=True, text=True)
 
         stdout = result.stdout
-        stderr = result.stderr
         print(stdout)
-        if stderr:
-            # print("⚠️ stderr:", stderr)
-            print("⚠️ stderr")
-
         try:
             match = re.search(r"ArtFID:\s*([\d.]+).*?FID:\s*([\d.]+).*?LPIPS:\s*([\d.]+).*?LPIPS_gray:\s*([\d.]+)", stdout)
             if match:
                 numbers = [float(g) for g in match.groups()]
-                writer.writerow([idx, style_prompt] + numbers)
+                writer.writerow([idx, suffix] + numbers)
             else:
-                raise ValueError(f"ArtFID output not found in stdout:\n{stdout}")
+                raise ValueError("ArtFID output not found or incomplete")
         except Exception as e:
             print(f"❌ Failed to parse eval results for prompt_{idx}: {e}")
-            writer.writerow([idx, style_prompt, 'ERROR', 'ERROR', 'ERROR', 'ERROR'])
+            writer.writerow([idx, suffix, 'ERROR', 'ERROR', 'ERROR', 'ERROR'])
