@@ -1,0 +1,4 @@
+Generated Caption: The image features a kitchen with a sink and a window. The sink is located under the window, and there is a window above it. The kitchen appears to be a small, possibly old, space with a few items on the counter. 
+
+There are several bottles placed on the counter, with one near the left side, another in the middle, and the third one on the right side. A cup can be seen on the counter as well, positioned between the bottles. Additionally, there is a book placed on the counter, slightly to the left of the center.
+Reference Caption: ['A kitchen is shown with a variety of items on the counters.', 'A kitchen has the windows open and plaid curtains.', 'A kitchen with two windows and two metal sinks.', 'An older kitchen with cluttered counter tops but empty sink.', 'Glasses and bottles are placed near a kitchen sink.']

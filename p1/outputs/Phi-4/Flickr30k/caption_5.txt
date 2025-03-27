@@ -1,0 +1,2 @@
+Generated Caption: Two men cooking in a kitchen
+Reference Caption: ['Two men, one in a gray shirt, one in a black shirt, standing near a stove.', 'Two guy cooking and joking around with the camera.', 'Two men in a kitchen cooking food on a stove.', 'Two men are at the stove preparing food.', 'Two men are cooking a meal.']

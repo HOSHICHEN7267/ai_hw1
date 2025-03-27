@@ -1,0 +1,2 @@
+Generated Caption: a woman on a skateboard
+Reference Caption: ['A girl is on rollerskates talking on her cellphone standing in a parking lot.', 'A trendy girl talking on her cellphone while gliding slowly down the street.', 'A young adult wearing rollerblades, holding a cellular phone to her ear.', 'There is a young girl on her cellphone while skating.', 'Woman talking on cellphone and wearing rollerskates.']

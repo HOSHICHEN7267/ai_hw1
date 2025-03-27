@@ -1,0 +1,2 @@
+Generated Caption: a group of people standing on a sidewalk
+Reference Caption: ['An asian man wearing a black suit stands near a dark-haired woman and a brown-haired woman.', 'Three people are standing outside near large pipes and a metal railing.', 'A young woman walks past two young people dressed in hip black outfits.', 'A woman with a large purse is walking by a gate.', 'Several people standing outside a building.']

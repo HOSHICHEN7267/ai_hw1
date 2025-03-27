@@ -1,0 +1,2 @@
+Generated Caption: a man wearing a black shirt
+Reference Caption: ['Two people in the photo are playing the guitar and the other is poking at him.', 'A man in green holds a guitar while the other man observes his shirt.', 'A man is fixing the guitar players costume.', "A guy stitching up another man's coat.", 'The two boys playing guitar']
