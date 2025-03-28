@@ -1,2 +1,0 @@
-Generated Caption: a man on a ladder
-Reference Caption: ['Someone in a blue shirt and hat is standing on stair and leaning against a window.', 'A man in a blue shirt is standing on a ladder cleaning a window.', 'A man on a ladder cleans the window of a tall building.', 'Man in blue shirt and jeans on ladder cleaning windows', 'A man on a ladder cleans a window']

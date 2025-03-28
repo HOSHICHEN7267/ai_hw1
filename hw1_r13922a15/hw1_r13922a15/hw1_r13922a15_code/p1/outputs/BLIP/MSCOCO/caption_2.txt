@@ -1,2 +1,0 @@
-Generated Caption: a woman sitting at a table with a candle in her mouth
-Reference Caption: ['A young girl inhales with the intent of blowing out a candle. ', 'A young girl is preparing to blow out her candle.', 'A kid is to blow out the single candle in a bowl of birthday goodness. ', 'Girl blowing out the candle on an ice-cream ', 'A little girl is getting ready to blow out a candle on a small dessert.']

@@ -1,2 +1,0 @@
-Generated Caption: a man doing a trick on a skateboard
-Reference Caption: ['Two men in Germany jumping over a rail at the same time without shirts.', 'Two youths are jumping over a roadside railing, at night.', 'Boys dancing on poles in the middle of the night.', 'Two men with no shirts jumping over a rail.', 'Two guys jumping over a gate together']

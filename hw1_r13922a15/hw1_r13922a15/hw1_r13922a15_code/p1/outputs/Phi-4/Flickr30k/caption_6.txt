@@ -1,4 +1,0 @@
-Generated Caption: The image features two men standing in a room, both holding guitars. One man is holding a red guitar, while the other man is holding a black guitar. They appear to be playing their instruments together, possibly performing a song or practicing.
-
-The room has a few other objects, including a chair located in the background and a TV on the left side of the room. There is also a book placed on a surface in the room, possibly a table or a shelf.
-Reference Caption: ['Two people in the photo are playing the guitar and the other is poking at him.', 'A man in green holds a guitar while the other man observes his shirt.', 'A man is fixing the guitar players costume.', "A guy stitching up another man's coat.", 'The two boys playing guitar']

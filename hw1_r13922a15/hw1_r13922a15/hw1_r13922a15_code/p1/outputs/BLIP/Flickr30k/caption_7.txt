@@ -1,2 +1,0 @@
-Generated Caption: a man sitting on a chair
-Reference Caption: ['A man sits in a chair while holding a large stuffed animal of a lion.', 'A man is sitting on a chair holding a large stuffed animal.', 'A man completes the finishing touches on a stuffed lion.', 'A man holds a large stuffed lion toy.', 'A man is smiling at a stuffed lion']

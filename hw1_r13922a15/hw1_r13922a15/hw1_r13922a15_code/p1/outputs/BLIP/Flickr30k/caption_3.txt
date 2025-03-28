@@ -1,2 +1,0 @@
-Generated Caption: a little girl in a pink dress
-Reference Caption: ['A child in a pink dress is climbing up a set of stairs in an entry way.', 'A little girl in a pink dress going into a wooden cabin.', 'A little girl climbing the stairs to her playhouse.', 'A little girl climbing into a wooden playhouse.', 'A girl going into a wooden building.']
