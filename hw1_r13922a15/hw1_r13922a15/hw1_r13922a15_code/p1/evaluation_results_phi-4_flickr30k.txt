@@ -1,0 +1,5 @@
+
+===== Phi-4 on Flickr30k 評估結果 =====
+BLEU Score: 0.0431
+ROUGE-1: 0.2367, ROUGE-2: 0.1299
+METEOR Score: 0.3156

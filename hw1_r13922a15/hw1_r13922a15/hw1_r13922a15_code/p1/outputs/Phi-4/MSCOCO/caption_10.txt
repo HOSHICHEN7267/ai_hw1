@@ -1,0 +1,6 @@
+Generated Caption: This image captures a quaint, small bathroom bathed in soft light. The walls, adorned with a white floral wallpaper, exude a sense of tranquility. A wooden vanity, with its rich, warm tones, stands against the wall. It houses a white sink, its silver faucet gleaming under the light. Above the sink, a mirror reflects the room, adding depth to the space.
+
+To the right of the sink, a white toilet stands, its lid closed. A gold towel rack hangs on the wall next to it, ready to hold a towel. The floor beneath is covered in a beige carpet, providing a soft contrast to the wooden vanity and white fixtures.
+
+The room is well-lit, with light streaming in from an unseen window, casting soft shadows and highlighting the textures of the wallpaper and carpet. The overall atmosphere is one of comfort and simplicity, a perfect retreat for a moment of solitude.
+Reference Caption: ['The bathroom is clean and ready to be used. ', 'a small bathroom with a sink and a toilet.', 'A toilet, sink and mirror in the bathroom', 'Doorway view into bathroom with a sink and toilet.', 'A white toilet sitting next to a sink.']
